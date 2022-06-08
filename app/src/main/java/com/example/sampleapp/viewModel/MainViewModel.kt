@@ -2,26 +2,28 @@ package com.example.sampleapp.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.ParsedRequestListener
-import com.example.sampleapp.data.ApiResponse
-import com.example.sampleapp.networking.ApiManager
+import com.example.sampleapp.repository.DataCallback
+import com.example.sampleapp.repository.DataRepositoryImpl
 
-class MainViewModel(private val apiManager: ApiManager) : ViewModel() {
+class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
 
     val images = MutableLiveData<List<String>>()
 
     fun getImages(breed: String) {
-        apiManager.getImages(breed, object: ParsedRequestListener<ApiResponse> {
 
-            override fun onResponse(response: ApiResponse?) {
-                println("Success $response")
-                images.postValue(response?.message)
+        repository.getData(breed, object : DataCallback {
+
+            override fun success(data: List<String>?) {
+                println("Success")
+                data?.let {
+                    images.postValue(it)
+                }
             }
 
-            override fun onError(anError: ANError?) {
-                println("Error happened $anError")
+            override fun error() {
+                println("Error happened")
             }
+
         })
     }
 }

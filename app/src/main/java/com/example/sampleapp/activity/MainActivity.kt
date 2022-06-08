@@ -7,18 +7,18 @@ import com.example.sampleapp.adapters.DataAdapter
 import com.example.sampleapp.adapters.ImageAdapter
 import com.example.sampleapp.common.lazyViewModel
 import com.example.sampleapp.databinding.ActivityMainBinding
-import com.example.sampleapp.networking.ApiManager
+import com.example.sampleapp.repository.DataRepositoryImpl
 import com.example.sampleapp.viewModel.MainViewModel
 import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject lateinit var apiManager: ApiManager
+    @Inject lateinit var repository: DataRepositoryImpl
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: MainViewModel by lazyViewModel({ application as App }, { MainViewModel(apiManager) })
+    private val viewModel: MainViewModel by lazyViewModel({ application as App }, { MainViewModel(repository) })
 
     private val imageAdapter: ImageAdapter by lazy {
         ImageAdapter { url ->
