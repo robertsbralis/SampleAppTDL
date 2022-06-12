@@ -2,13 +2,17 @@ package com.example.sampleapp.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.sampleapp.App
 import com.example.sampleapp.adapters.DataAdapter
 import com.example.sampleapp.adapters.ImageAdapter
 import com.example.sampleapp.common.lazyViewModel
 import com.example.sampleapp.databinding.ActivityMainBinding
 import com.example.sampleapp.repository.DataRepositoryImpl
+import com.example.sampleapp.viewModel.DataState
 import com.example.sampleapp.viewModel.MainViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -37,10 +41,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observe() {
+        // Live data
         viewModel.images.observe(this, { images ->
             println("Items received")
-            imageAdapter.setData(images.take(10))
+            imageAdapter.setDataDiffUtil(images.take(10))
         })
+
+        // State flow
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is DataState.Success -> imageAdapter.setDataDiffUtil(state.data.take(5))
+                    else -> {
+                        // Empty
+                    }
+                }
+            }
+        }
     }
 
     private fun init() {
