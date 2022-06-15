@@ -3,4 +3,7 @@
 
     <string name="message_get_data">Get data</string>
     <string name="preview_title">Preview</string>
+    <string name="imageViewText">tempImageView</string>
+    <string name="edit_text_value">Enter number</string>
+    <string name="activity_label">My Activity Title</string>
 </resources>

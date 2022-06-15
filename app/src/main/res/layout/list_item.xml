@@ -11,6 +11,7 @@
         android:padding="12dp"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:drawableStartCompat="@drawable/ic_baseline_star_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
