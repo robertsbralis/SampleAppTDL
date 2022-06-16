@@ -11,8 +11,13 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
 
+    companion object {
+        const val LIMIT = 10
+    }
+
     // Live data
     val images = MutableLiveData<List<String>>()
+    val amountOfResult = MutableLiveData(0)
 
     // State flow
     private val _state = MutableStateFlow(DataState.Success(emptyList()))
@@ -26,8 +31,9 @@ class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
                 override fun success(data: List<String>?) {
                     println("Success")
                     data?.let {
-                        //images.postValue(it)
+                        images.postValue(it)
                         _state.value = DataState.Success(it)
+                        amountOfResult.postValue(data.size)
                     }
                 }
 
@@ -35,6 +41,14 @@ class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
                     println("Error happened")
                 }
             })
+        }
+    }
+
+    fun getLimit(value: String) : Int {
+        return if(value.isEmpty()) {
+            LIMIT
+        } else {
+            value.toInt()
         }
     }
 }

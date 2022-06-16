@@ -7,10 +7,12 @@ import com.example.sampleapp.App
 import com.example.sampleapp.adapters.DataAdapter
 import com.example.sampleapp.adapters.ImageAdapter
 import com.example.sampleapp.common.lazyViewModel
+import com.example.sampleapp.common.showMessage
 import com.example.sampleapp.databinding.ActivityMainBinding
 import com.example.sampleapp.repository.DataRepositoryImpl
 import com.example.sampleapp.viewModel.DataState
 import com.example.sampleapp.viewModel.MainViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,10 +44,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun observe() {
         // Live data
-        viewModel.images.observe(this, { images ->
+        viewModel.images.observe(this) { images ->
             println("Items received")
-            imageAdapter.setDataDiffUtil(images.take(10))
-        })
+            imageAdapter.setDataDiffUtil(images.take(viewModel.getLimit(binding.editText.text.toString())))
+        }
+
+        viewModel.amountOfResult.observe(this) { amount ->
+            println("Result amount $amount")
+            text_view.text = amount.toString()
+        }
 
         // State flow
         lifecycleScope.launch {
@@ -69,6 +76,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvImages.apply {
             adapter = imageAdapter
+        }
+
+        binding.imageView.setOnClickListener {
+            showMessage(viewModel.amountOfResult.value.toString(),viewModel.getLimit(binding.editText.text.toString()))
         }
     }
 

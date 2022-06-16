@@ -24,7 +24,7 @@
         <TextView
             android:id="@+id/text_view"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:text="0"
             android:textAlignment="center"
             android:textColor="@color/orange" />
@@ -36,7 +36,7 @@
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:labelFor="@id/edit_text"
-            android:text="@string/edit_text_value"
+            android:hint="@string/edit_text_value"
             app:layout_constraintStart_toEndOf="@id/text_view"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.appcompat.widget.LinearLayoutCompat>
