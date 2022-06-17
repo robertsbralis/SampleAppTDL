@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val imageAdapter: ImageAdapter by lazy {
         ImageAdapter { url ->
-            PreviewActivity.start(this, url)
+            viewModel.checkboxState.value?.let { PreviewActivity.start(this, url, it) }
         }
     }
 
@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         App.component.inject(this)
 
+        viewModel.getBreeds()
         observe()
         init()
     }
@@ -54,6 +55,18 @@ class MainActivity : AppCompatActivity() {
             text_view.text = amount.toString()
         }
 
+        viewModel.checkboxState.observe(this) { flag ->
+            println("Checkbox checked: $flag")
+        }
+
+        viewModel.breeds.observe(this) { breeds ->
+            binding.rvData.apply {
+                adapter = DataAdapter(breeds) { selected ->
+                    viewModel.getImages(selected)
+                }
+            }
+        }
+
         // State flow
         lifecycleScope.launch {
             viewModel.state.collect { state ->
@@ -68,18 +81,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        binding.rvData.apply {
-            adapter = DataAdapter(listOf("corgi", "chow", "hound")) { selected ->
-                viewModel.getImages(selected)
-            }
-        }
-
         binding.rvImages.apply {
             adapter = imageAdapter
         }
 
         binding.imageView.setOnClickListener {
             showMessage(viewModel.amountOfResult.value.toString(),viewModel.getLimit(binding.editText.text.toString()))
+        }
+
+        binding.cbImageLoader.setOnCheckedChangeListener{ _, isChecked ->
+            cb_image_loader.isChecked = isChecked
+            viewModel.checkboxState.postValue(isChecked)
         }
     }
 

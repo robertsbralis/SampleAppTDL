@@ -5,6 +5,7 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.interfaces.ParsedRequestListener
 import com.example.sampleapp.data.ApiResponse
+import com.example.sampleapp.data.BreedListApiResponse
 
 class ApiManager(context: Context) : Api {
 
@@ -22,5 +23,12 @@ class ApiManager(context: Context) : Api {
             .setPriority(Priority.LOW)
             .build()
             .getAsObject(ApiResponse::class.java, callback)
+    }
+
+    override fun getBreeds(callback: ParsedRequestListener<BreedListApiResponse>) {
+        AndroidNetworking.get("$ENDPOINT/breeds/list/all")
+            .setPriority(Priority.LOW)
+            .build()
+            .getAsObject(BreedListApiResponse::class.java, callback)
     }
 }

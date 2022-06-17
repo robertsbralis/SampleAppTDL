@@ -6,4 +6,7 @@
     <string name="imageViewText">tempImageView</string>
     <string name="edit_text_value">Enter number</string>
     <string name="activity_label">My Activity Title</string>
+    <string name="new_fragment_back">Back</string>
+    <string name="new_fragment_exit">Exit</string>
+    <string name="preview_fragment_next_btn">Next</string>
 </resources>

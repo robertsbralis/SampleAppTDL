@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import coil.load
 import com.example.sampleapp.R
-import com.example.sampleapp.databinding.FragmentPreviewBinding
-import com.squareup.picasso.Picasso
+import com.example.sampleapp.databinding.FragmentNewBinding
 
-class PreviewFragment : Fragment() {
+class NewFragment : Fragment() {
 
-    private lateinit var binding: FragmentPreviewBinding
+    private lateinit var binding: FragmentNewBinding
     private lateinit var fragManager: FragmentManager
 
     private var url: String? = null
@@ -29,45 +28,34 @@ class PreviewFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentPreviewBinding.inflate(inflater, container, false)
-        init(url)
+        binding = FragmentNewBinding.inflate(inflater, container, false)
+        binding.tvBack.background = this.context?.let { ContextCompat.getDrawable(it, R.drawable.ic_baseline_arrow_back_24) }
         fragManager = this.parentFragmentManager
         observe()
         return binding.root
     }
 
-    private fun init(url: String?) {
-        url?.let {
-            if(!checkboxState) {
-                Picasso.get().load(it).fit().centerCrop().into(binding.ivImage)
-                binding.tvImageLoaderType.text = "Picasso image loading library"
-            } else {
-                binding.ivImage.load(it) {
-                    crossfade(true)
-                    placeholder(R.drawable.ic_launcher_foreground)
-                }
-                binding.tvImageLoaderType.text = "Coil image loading library"
-            }
-        }
-    }
-
     private fun observe(){
-        binding.btnNext.setOnClickListener {
+        binding.tvBack.setOnClickListener {
             url.let {
                 fragManager
                     .beginTransaction()
-                    .replace(R.id.fragment_container, NewFragment.create(url!!, checkboxState), NewFragment.TAG)
+                    .replace(R.id.fragment_container, PreviewFragment.create(url!!, checkboxState), PreviewFragment.TAG)
                     .commit()
             }
+        }
+
+        binding.tvExit.setOnClickListener {
+            activity?.onBackPressed()
         }
     }
 
     companion object {
-        const val TAG = "PreviewFragment"
+        const val TAG = "NewFragment"
         private const val FRAGMENT_EXTRA_URL = "fragment_extra_image_url"
         private const val FRAGMENT_CHECKBOX_STATE = "fragment_checkbox_state"
 
-        fun create(url: String, checkboxState: Boolean?) : PreviewFragment = PreviewFragment().apply {
+        fun create(url: String, checkboxState: Boolean?) : NewFragment = NewFragment().apply {
             Bundle().apply {
                 putString(FRAGMENT_EXTRA_URL, url)
                 putBoolean(FRAGMENT_CHECKBOX_STATE, checkboxState!!)

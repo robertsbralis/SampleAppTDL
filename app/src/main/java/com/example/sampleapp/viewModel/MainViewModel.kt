@@ -3,6 +3,7 @@ package com.example.sampleapp.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.androidnetworking.error.ANError
 import com.example.sampleapp.repository.DataCallback
 import com.example.sampleapp.repository.DataRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,9 @@ class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
 
     // Live data
     val images = MutableLiveData<List<String>>()
+    val breeds = MutableLiveData<List<String>>()
     val amountOfResult = MutableLiveData(0)
+    val checkboxState = MutableLiveData(false)
 
     // State flow
     private val _state = MutableStateFlow(DataState.Success(emptyList()))
@@ -37,8 +40,30 @@ class MainViewModel(private val repository: DataRepositoryImpl) : ViewModel() {
                     }
                 }
 
-                override fun error() {
-                    println("Error happened")
+                override fun error(error: ANError) {
+                    println("Error happened ${error.errorBody}")
+                }
+
+                override fun breedListSuccess(data: HashMap<String, List<String>>?) {}
+            })
+        }
+    }
+
+
+    fun getBreeds() {
+        viewModelScope.launch {
+            repository.getBreeds(object: DataCallback {
+                override fun success(data: List<String>?) {}
+
+                override fun error(error: ANError) {
+                    println("Get breed error ${error.errorBody}")
+                }
+
+                override fun breedListSuccess(data: HashMap<String, List<String>>?) {
+                    println("Get breed success")
+                    data?.let {
+                        breeds.postValue(it.keys.toList())
+                    }
                 }
             })
         }

@@ -19,25 +19,28 @@ class PreviewActivity : AppCompatActivity() {
 
         title = getString(R.string.preview_title)
 
-        init(intent?.getStringExtra(EXTRA_URL))
+        init(intent?.getStringExtra(EXTRA_URL), intent?.getBooleanExtra(CHECKBOX_STATE, false))
     }
 
-    private fun init(url: String?) {
+    private fun init(url: String?, checkboxState: Boolean?) {
         if (url.isNullOrEmpty()) return
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragment_container, PreviewFragment.create(url), PreviewFragment.TAG)
+            .add(R.id.fragment_container, PreviewFragment.create(url, checkboxState), PreviewFragment.TAG)
             .commit()
     }
 
+
     companion object {
         private const val EXTRA_URL = "extra_image_url"
+        private const val CHECKBOX_STATE = "checkbox_state"
 
-        fun start(activity: Activity, url: String) {
+        fun start(activity: Activity, url: String, checkboxState: Boolean) {
             activity.startActivity(Intent(activity, PreviewActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
                 putExtra(EXTRA_URL, url)
+                putExtra(CHECKBOX_STATE, checkboxState)
             })
         }
     }
