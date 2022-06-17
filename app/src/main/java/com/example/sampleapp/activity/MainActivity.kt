@@ -2,11 +2,13 @@ package com.example.sampleapp.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.sampleapp.App
 import com.example.sampleapp.adapters.DataAdapter
 import com.example.sampleapp.adapters.ImageAdapter
 import com.example.sampleapp.common.lazyViewModel
+import com.example.sampleapp.common.observeOnce
 import com.example.sampleapp.common.showMessage
 import com.example.sampleapp.databinding.ActivityMainBinding
 import com.example.sampleapp.repository.DataRepositoryImpl
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             println("Checkbox checked: $flag")
         }
 
-        viewModel.breeds.observe(this) { breeds ->
+        viewModel.breeds.observeOnce(this) { breeds ->
             binding.rvData.apply {
                 adapter = DataAdapter(breeds) { selected ->
                     viewModel.getImages(selected)
